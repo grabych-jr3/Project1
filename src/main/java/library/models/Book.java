@@ -1,18 +1,35 @@
 package library.models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-public class Book {
-    private int bookId;
-    private Integer personId;
+import java.util.Objects;
 
+@Entity
+@Table(name = "Book")
+public class Book {
+
+    @Id
+    @Column(name = "book_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int bookId;
+
+    @Column(name = "name")
     @NotEmpty(message = "Поле не може бути пустим")
     private String name;
+
+    @Column(name = "author")
     @NotEmpty(message = "Поле не може бути пустим")
     private String author;
+
+    @Column(name = "year")
     @NotNull(message = "Рік обов'язковий")
     private int year;
+
+    @ManyToOne
+    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
+    private Person owner;
 
     public Book(){}
 
@@ -54,11 +71,33 @@ public class Book {
         this.bookId = bookId;
     }
 
-    public Integer getPersonId() {
-        return personId;
+    public Person getOwner() {
+        return owner;
     }
 
-    public void setPersonId(Integer personId) {
-        this.personId = personId;
+    public void setOwner(Person owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookId=" + bookId +
+                ", name='" + name + '\'' +
+                ", author='" + author + '\'' +
+                ", year=" + year +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return bookId == book.bookId && year == book.year && Objects.equals(name, book.name) && Objects.equals(author, book.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookId, name, author, year);
     }
 }
