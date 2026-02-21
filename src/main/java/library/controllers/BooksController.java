@@ -1,8 +1,6 @@
 package library.controllers;
 
 import jakarta.validation.Valid;
-import library.dao.BookDAO;
-import library.dao.PersonDAO;
 import library.models.Book;
 import library.models.Person;
 import library.services.BooksService;
@@ -16,16 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/books")
 public class BooksController {
-
-    private final BookDAO bookDAO;
-    private final PersonDAO personDAO;
     private final BooksService booksService;
     private final PeopleService peopleService;
 
     @Autowired
-    public BooksController(BookDAO bookDAO, PersonDAO personDAO, BooksService booksService, PeopleService peopleService) {
-        this.bookDAO = bookDAO;
-        this.personDAO = personDAO;
+    public BooksController(BooksService booksService, PeopleService peopleService) {
         this.booksService = booksService;
         this.peopleService = peopleService;
     }
@@ -39,7 +32,7 @@ public class BooksController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("book", booksService.show(id));
-        model.addAttribute("person", bookDAO.showPersonWhoTookTheBook(id));
+        model.addAttribute("person", booksService.findOwnerByBookId(id));
         model.addAttribute("cleanPerson", new Person());
         model.addAttribute("people", peopleService.index());
         return "books/show";
@@ -82,13 +75,13 @@ public class BooksController {
 
     @PatchMapping("/{id}/release")
     public String deleteBookFromPerson(@PathVariable("id") int id){
-        bookDAO.deleteBookFromPerson(id);
+        booksService.clearOwnerByBookId(id);
         return "redirect:/books/" + id;
     }
 
     @PatchMapping("/{id}/assign")
     public String assignBookToPerson(@PathVariable("id") int id, @ModelAttribute("assignedPerson") Person assignedPerson){
-        bookDAO.assignBook(id, assignedPerson.getPersonId());
+        booksService.setOwnerByBookId(id, assignedPerson.getPersonId());
         return "redirect:/books/" + id;
     }
 }

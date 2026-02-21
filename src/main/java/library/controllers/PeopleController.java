@@ -1,7 +1,7 @@
 package library.controllers;
 
-import library.dao.PersonDAO;
 import library.models.Person;
+import library.services.BooksService;
 import library.services.PeopleService;
 import library.util.PersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +16,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/people")
 public class PeopleController {
 
-    private final PersonDAO personDAO;
     private final PeopleService peopleService;
+    private final BooksService booksService;
     private final PersonValidator personValidator;
 
     @Autowired
-    public PeopleController(PersonDAO personDAO, PeopleService peopleService, PersonValidator personValidator) {
-        this.personDAO = personDAO;
+    public PeopleController(PeopleService peopleService, BooksService booksService, PersonValidator personValidator) {
         this.peopleService = peopleService;
+        this.booksService = booksService;
         this.personValidator = personValidator;
     }
 
@@ -36,7 +36,7 @@ public class PeopleController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("person", peopleService.show(id));
-        model.addAttribute("books", personDAO.getBooksByUserId(id));
+        model.addAttribute("books", booksService.findByOwnerPersonId(id));
         return "people/show";
     }
 

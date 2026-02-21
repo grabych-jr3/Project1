@@ -28,6 +28,10 @@ public class PeopleService {
         return person.orElse(null);
     }
 
+    public Optional<Person> show(String fullName){
+        return peopleRepository.findByFullName(fullName);
+    }
+
     @Transactional
     public void create(Person person){
         peopleRepository.save(person);
