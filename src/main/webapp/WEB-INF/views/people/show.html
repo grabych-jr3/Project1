@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Show</title>
+</head>
+<body>
+<h1 th:text="${person.fullName}">NAME</h1>
+<p th:text="${person.birthYear}">YEAR</p>
+<div th:if="${not #lists.isEmpty(books)}">
+    <h2>Книги</h2>
+    <div th:each="book : ${books}">
+        <p th:text="|${book.name}, ${book.author}, ${book.year}|">BOOK</p>
+    </div>
+</div>
+
+<p th:if="${#lists.isEmpty(books)}">
+    Користувач не взяв жодної книги
+</p>
+<hr>
+<a th:href="@{/people/{id}/edit(id=${person.personId})}">Edit</a>
+<form th:method="DELETE" th:action="@{/people/{id}(id=${person.personId})}">
+    <input type="submit" value="Delete!">
+</form>
+</body>
+</html>
