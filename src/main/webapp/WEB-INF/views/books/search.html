@@ -12,8 +12,18 @@
     <input type="submit" value="Search">
 </form>
 
-<div th:each="book : ${books}">
-    <p th:text="${book.name}"></p>
+<div th:if="${#lists.isEmpty(books)}">
+    Книг не знайдено
+</div>
+<div th:if="${not #lists.isEmpty(books)}">
+    <div th:each="book : ${books}">
+        <p th:text="|${book.name}, ${book.author}, ${book.year}|">BOOK</p>
+        <p th:if="${book.owner == null}">Книга вільна</p>
+        <div th:if="${book.owner}">
+            <p th:text="|Книга зараз у: ${book.owner.fullName}|"></p>
+        </div>
+        <hr>
+    </div>
 </div>
 
 </body>
