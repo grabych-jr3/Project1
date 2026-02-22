@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Search</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/books/search}" th:object="${name}">
+    <label for="name">Enter name of the book</label>
+    <input type="text" id="name" th:field="*{text}">
+    <input type="submit" value="Search">
+</form>
+
+<div th:if="${#lists.isEmpty(books)}">
+    Книг не знайдено
+</div>
+<div th:if="${not #lists.isEmpty(books)}">
+    <div th:each="book : ${books}">
+        <p th:text="|${book.name}, ${book.author}, ${book.year}|">BOOK</p>
+        <p th:if="${book.owner == null}">Книга вільна</p>
+        <div th:if="${book.owner}">
+            <p th:text="|Книга зараз у: ${book.owner.fullName}|"></p>
+        </div>
+        <hr>
+    </div>
+</div>
+
+</body>
+</html>

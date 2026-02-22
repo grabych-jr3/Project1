@@ -26,4 +26,6 @@ public interface BooksRepository extends JpaRepository<Book, Integer> {
     @Transactional
     @Query("update Book b set b.owner.personId = :personId where b.bookId = :id")
     void setOwnerByBookId(@Param("id") int id, @Param("personId") int personId);
+
+    List<Book> findByNameLike(String name);
 }
