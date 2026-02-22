@@ -4,6 +4,8 @@ import library.models.Book;
 import library.models.Person;
 import library.repositories.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,18 @@ public class BooksService {
 
     public List<Book> index(){
         return booksRepository.findAll();
+    }
+
+    public List<Book> index(Integer page, Integer booksPerPage){
+        return booksRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
+    }
+
+    public List<Book> index(boolean sort_by_year){
+        return booksRepository.findAll(Sort.by("year"));
+    }
+
+    public List<Book> index(Integer page, Integer booksPerPage, boolean sort_by_year){
+        return booksRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("year"))).getContent();
     }
 
     public Book show(int id){
