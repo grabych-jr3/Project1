@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,17 +64,25 @@ public class BooksService {
 
     @Transactional
     public List<Book> findByOwnerPersonId(int id){
-        return booksRepository.findByOwnerPersonId(id);
+        List<Book> books = booksRepository.findByOwnerPersonId(id);
+        for(Book book : books){
+            if(book.getAssignedAt() != null && Duration.between(book.getAssignedAt(), LocalDateTime.now()).toDays() > 10){
+                book.setExpired(true);
+            }
+        }
+        return books;
     }
 
     @Transactional
     public void clearOwnerByBookId(int id){
         booksRepository.clearOwnerByBookId(id);
+        booksRepository.clearAssignedAt(id);
     }
 
     @Transactional
     public void setOwnerByBookId(int id, int personId){
         booksRepository.setOwnerByBookId(id, personId);
+        booksRepository.setAssignedAt(id);
     }
 
     public Person findOwnerByBookId(int id){
