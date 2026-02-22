@@ -79,4 +79,8 @@ public class BooksService {
         Optional<Book> book = booksRepository.findById(id);
         return book.map(Book::getOwner).orElse(null);
     }
+
+    public List<Book> searchAllBooksByName(String name){
+        return booksRepository.findByNameLike(name + "%");
+    }
 }
