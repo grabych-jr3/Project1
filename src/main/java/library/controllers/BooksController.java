@@ -96,7 +96,7 @@ public class BooksController {
 
     @PatchMapping("/{id}/assign")
     public String assignBookToPerson(@PathVariable("id") int id, @ModelAttribute("assignedPerson") Person assignedPerson){
-        booksService.setOwnerByBookId(id, assignedPerson.getPersonId());
+        booksService.setOwnerByBookId(id, assignedPerson);
         return "redirect:/books/" + id;
     }
 

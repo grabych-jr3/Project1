@@ -62,7 +62,6 @@ public class BooksService {
         booksRepository.deleteById(id);
     }
 
-    @Transactional
     public List<Book> findByOwnerPersonId(int id){
         List<Book> books = booksRepository.findByOwnerPersonId(id);
         for(Book book : books){
@@ -75,14 +74,22 @@ public class BooksService {
 
     @Transactional
     public void clearOwnerByBookId(int id){
-        booksRepository.clearOwnerByBookId(id);
-        booksRepository.clearAssignedAt(id);
+        Book book = booksRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+        Person owner = book.getOwner();
+
+        if(owner != null){
+            owner.getBooks().remove(book);
+            book.setOwner(null);
+        }
+        book.setAssignedAt(null);
     }
 
     @Transactional
-    public void setOwnerByBookId(int id, int personId){
-        booksRepository.setOwnerByBookId(id, personId);
-        booksRepository.setAssignedAt(id);
+    public void setOwnerByBookId(int id, Person person){
+        Book book = booksRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+        book.setOwner(person);
+        person.getBooks().add(book);
+        book.setAssignedAt(LocalDateTime.now());
     }
 
     public Person findOwnerByBookId(int id){
