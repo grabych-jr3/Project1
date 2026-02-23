@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,11 +31,14 @@ public class Person {
     @OneToMany(mappedBy = "owner")
     private List<Book> books;
 
-    public Person(){}
+    public Person(){
+        this.books = new ArrayList<>();
+    }
 
     public Person(String fullName, int birthYear) {
         this.fullName = fullName;
         this.birthYear = birthYear;
+        this.books = new ArrayList<>();
     }
 
     public String getFullName() {

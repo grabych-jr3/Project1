@@ -5,7 +5,6 @@ import library.models.Book;
 import library.models.Person;
 import library.services.BooksService;
 import library.services.PeopleService;
-import library.util.SearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -96,18 +95,18 @@ public class BooksController {
 
     @PatchMapping("/{id}/assign")
     public String assignBookToPerson(@PathVariable("id") int id, @ModelAttribute("assignedPerson") Person assignedPerson){
-        booksService.setOwnerByBookId(id, assignedPerson.getPersonId());
+        booksService.setOwnerByBookId(id, assignedPerson);
         return "redirect:/books/" + id;
     }
 
     @GetMapping("/search")
-    public String searchPage(@ModelAttribute("name") SearchForm name){
+    public String searchPage(){
         return "books/search";
     }
 
     @PostMapping("/search")
-    public String search(@ModelAttribute(value = "name") SearchForm name, Model model){
-        model.addAttribute("books", booksService.searchAllBooksByName(name.getText()));
+    public String search(@RequestParam("name") String name, Model model){
+        model.addAttribute("books", booksService.searchAllBooksByName(name));
         return "books/search";
     }
 }
