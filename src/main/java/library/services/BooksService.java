@@ -98,6 +98,6 @@ public class BooksService {
     }
 
     public List<Book> searchAllBooksByName(String name){
-        return booksRepository.findByNameLike(name + "%");
+        return booksRepository.findByNameStartingWithIgnoreCase(name);
     }
 }
